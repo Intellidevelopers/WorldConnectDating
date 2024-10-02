@@ -1,0 +1,15 @@
+{
+  "background_color": "#FF50A2",
+  "description": "Dating Kit: Dating Mobile App Template ( Bootstrap + PWA )",
+  "display": "standalone",
+  "icons": [
+	{
+	  "src": "assets/images/pwa150x150.png",
+	  "sizes": "150x150",
+	  "type": "image/png"
+	}
+  ],
+  "name": "Dating Mobile App Template",
+  "short_name": "Dating Kit",
+  "start_url": "welcome.html"
+}
