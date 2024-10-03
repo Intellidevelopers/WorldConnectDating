@@ -40,6 +40,13 @@
 	<link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:opsz,wght@6..12,200;6..12,300;6..12,400;6..12,500;6..12,600;6..12,700;6..12,800;6..12,900;6..12,1000&amp;family=Poppins:wght@100;200;300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
 
+	<style>
+		.flex{
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+		}
+	</style>
 </head>   
 <body class="bg-white">
 <div class="page-wrapper">
@@ -84,12 +91,12 @@
 							<h4 class="title">Chelsea, 21</h4>
 							<p class="mb-0"><i class="icon feather icon-map-pin"></i> 5 miles away</p>
 						</div>
-						<a href="chat.html" class="dz-icon"><i class="flaticon flaticon-star-1"></i></a>
+						<a href="javascript:void(0);" onclick="alert('You followed this user')" class="dz-icon"><i class="icon feather icon-user-plus"></i></a>
 					</div>
 				</div>
 				<div class="detail-bottom-area">
 					<div class="about">
-						<h6 class="title">Basic information</h6>
+							<h6 class="title">Basic information</h6>
 						<p class="para-text">Just moved back to jakarata after living at India for 10+ years. Di luar terlifiat cenger - center di dalam.</p>					
 					</div>
 					<div class="intrests mb-3">
@@ -171,9 +178,9 @@
 	<!-- Menubar -->
 	<div class="footer fixed">
 		<div class="dz-icon-box">
-			<a href="home.html" class="icon dz-flex-box dislike"><i class="flaticon flaticon-cross font-18"></i></a>
-			<a href="home.html" class="icon dz-flex-box super-like"><i class="fa-solid fa-star"></i></a>
-			<a href="wishlist.html" class="icon dz-flex-box like"><i class="fa-solid fa-heart"></i></a>
+			<a href="home.html" title="Not Interested" class="icon dz-flex-box dislike"><i class="flaticon flaticon-cross font-18"></i></a>
+			<a href="chat.html" title="Message user" class="icon dz-flex-box super-like"><i class="fa-solid fa-message"></i></a>
+			<a href="wishlist.html" title="Interested" class="icon dz-flex-box like"><i class="fa-solid fa-heart"></i></a>
 		</div>
 	</div>
 	<!-- Menubar -->
