@@ -3,10 +3,280 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Live Streaming Screen</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"/>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #000;
+            color: #fff;
+        }
+
+        .live-stream-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .live-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            position: absolute;
+            top: 20px;
+            left: 20px;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: 2px solid #fff;
+        }
+
+        .user-details {
+            margin-left: 10px;
+        }
+
+        .username {
+            font-weight: bold;
+        }
+
+        .live-status {
+            font-size: 0.8rem;
+            color: #d3d3d3;
+        }
+
+        .follow-btn {
+            margin-left: 10px;
+            padding: 5px 10px;
+            background-color: #00000044;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            border: 1px solid #696666;
+        }
+
+        .interaction-icons {
+            position: absolute;
+            top: 80px;
+            left: 20px;
+            flex-direction: row;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .interaction-icons div {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .icon-heart, .icon-star {
+            width: 24px;
+            height: 24px;
+            background-color: yellow; /* Placeholder for icons */
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+
+        .message-input-container {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            background-color: #333;
+            border-radius: 30px;
+            padding: 10px;
+        }
+
+        #message-input {
+            flex-grow: 1;
+            padding: 10px;
+            background-color: #333;
+            border: none;
+            color: white;
+            border-radius: 30px;
+            margin-right: 10px;
+        }
+
+        #message-input:focus {
+            outline: none;
+        }
+
+        #send-btn {
+            background-color: #d80aef;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        #message-display {
+            position: absolute;
+            bottom: 80px;
+            left: 20px;
+            right: 20px;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .fa-heart {
+            color: rgb(246, 5, 5);
+            margin-right: 5px;
+        }
+
+        .likes {
+            align-items: center;
+            justify-content: center;
+            background-color: #00000044;
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        .shares {
+            align-items: center;
+            background-color: #00000044;
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        .fa-star {
+            color: rgb(255, 200, 0);
+            margin-right: 5px;
+        }
+
+        .fa-plus {
+            color: rgb(255, 255, 255);
+            font-size: 28px;
+            background-color: #d80aef;
+            padding: 10px;
+            border-radius: 50px;
+        }
+
+    </style>
 </head>
 <body>
-    <h1>Live homepage</h1>
-    <p>Coming soon...</p>
+    <div class="live-stream-container">
+        <!-- Live Stream Video -->
+        <div class="stream">
+            <div id="local-player" class="live-video"></div>
+        </div>
+
+        <!-- User Info and Followers -->
+        <div class="user-info">
+            <img src="assets/images/user/pic1.jpg" alt="User Avatar" class="user-avatar">
+            <div class="user-details">
+                <p class="username">Micah Clarke</p>
+                <p class="live-status">Live now • 20 Viewers</p>
+            </div>
+            <button id="start-broadcast" class="follow-btn">2k views</button>
+        </div>
+
+        <!-- Interaction Icons -->
+        <div class="interaction-icons">
+            <div class="likes">
+                <i class="fa fa-heart"></i>
+                <span>15k</span>
+            </div>
+            <div class="shares">
+                <i class="fa fa-star"></i>
+                <span>55</span>
+            </div>
+        </div>
+
+        <!-- Message Input Box -->
+        <div class="message-input-container">
+            <input type="text" placeholder="Say Something..." id="message-input">
+            <button id="send-btn">
+                <i class="fa fa-paper-plane"></i>
+            </button>
+        </div>
+
+        <!-- Display Sent Messages -->
+        <div id="message-display"></div>
+    </div>
+
+    <script>
+        const messageInput = document.getElementById('message-input');
+        const sendBtn = document.getElementById('send-btn');
+        const messageDisplay = document.getElementById('message-display');
+
+        // Function to display typed message on screen
+        sendBtn.addEventListener('click', () => {
+            const messageText = messageInput.value.trim();
+            if (messageText) {
+                const messageElement = document.createElement('p');
+                messageElement.textContent = messageText;
+                messageDisplay.appendChild(messageElement);
+                messageInput.value = ''; // Clear the input after sending
+            }
+        });
+
+    </script>
 </body>
+<script>
+    const APP_ID = '279b4ee2efca4b03ab11f369a80abfd9'; // Replace with your Agora App ID
+const TOKEN = '007eJxTYFi/dMeSI3ecqp3ZqmSK+ZNjSn0k+s7f/77W0zRb9PvybWcVGIzMLZNMUlONUtOSE02SDIwTkwwN04zNLBMtDBKT0lIsDyixpDcEMjLsqcxgZWSAQBCfiyEnsyy1uKQoNTGXgQEAR8Eimw=='; // Replace with your Agora Token (optional if you haven't enabled tokens)
+const CHANNEL_NAME = 'livestream'; // Channel name for the live stream
+
+let client = AgoraRTC.createClient({ mode: 'live', codec: 'vp8' });
+let localTracks = { videoTrack: null, audioTrack: null };
+
+// Join the channel and start broadcasting
+async function startLiveStream() {
+    await client.join(APP_ID, CHANNEL_NAME, TOKEN || null);
+    
+    // Create and publish local tracks
+    localTracks.audioTrack = await AgoraRTC.createMicrophoneAudioTrack();
+    localTracks.videoTrack = await AgoraRTC.createCameraVideoTrack();
+    
+    localTracks.videoTrack.play('local-player');
+    
+    await client.publish(Object.values(localTracks));
+    console.log('Live stream started');
+}
+
+// Event listener for start button
+document.getElementById('start-broadcast').addEventListener('click', () => {
+    startLiveStream().catch(error => {
+        console.error('Error starting live stream', error);
+    });
+});
+
+// Optionally handle message sending in the chat
+document.getElementById('send-btn').addEventListener('click', () => {
+    const messageText = messageInput.value.trim();
+    if (messageText) {
+        const messageElement = document.createElement('p');
+        messageElement.textContent = messageText;
+        messageDisplay.appendChild(messageElement);
+        messageInput.value = ''; // Clear the input after sending
+    }
+});
+
+</script>
+<script src="https://cdn.agora.io/sdk/release/AgoraRTC_N.js"></script>
+
 </html>
