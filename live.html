@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="theme-color" content="#00000044">
     <title>Live Streaming Screen</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"/>
     <style>
@@ -37,9 +38,12 @@
         .user-info {
             display: flex;
             align-items: center;
-            position: absolute;
+            position: fixed;
             top: 20px;
             left: 20px;
+            background-color: #00000044;
+            padding: 8px;
+            border-radius: 10px;
         }
 
         .user-avatar {
@@ -74,13 +78,14 @@
         }
 
         .interaction-icons {
-            position: absolute;
+            position: fixed;
             top: 80px;
             left: 20px;
             flex-direction: row;
             display: flex;
             align-items: center;
             gap: 20px;
+            margin-top: 15px;
         }
 
         .interaction-icons div {
@@ -124,13 +129,14 @@
         }
 
         #send-btn {
-            background-color: #d80aef;
+            background-color: #FF50A2;
             color: #fff;
-            padding: 10px;
+            padding: 8px;
             border: none;
             border-radius: 50%;
             cursor: pointer;
             font-size: 20px;
+            width: 40px;
         }
 
         #message-display {
@@ -139,7 +145,9 @@
             left: 20px;
             right: 20px;
             color: white;
-            margin-bottom: 20px;
+            margin-bottom: 40px;
+            width: 70%;
+            font-size: 12px;
         }
 
         .fa-heart {
@@ -168,49 +176,179 @@
         }
 
         .fa-plus {
-            color: rgb(255, 255, 255);
+            color: rgb(156, 183, 192);
             font-size: 28px;
-            background-color: #d80aef;
             padding: 10px;
             border-radius: 50px;
+            cursor: pointer;
+        }
+        .fa-share {
+            color: rgb(255, 255, 255);
+            font-size: 28px;
+            padding: 10px;
+            border-radius: 50px;
+            cursor: pointer;
+        }
+        .fa-camera {
+            color: rgb(255, 255, 252);
+            font-size: 28px;
+            padding: 10px;
+            border-radius: 50px;
+            cursor: pointer;
+        }
+        .fa-gift {
+            color: rgb(236, 151, 242);
+            font-size: 28px;
+            padding: 10px;
+            border-radius: 50px;
+            cursor: pointer;
         }
 
+        /* Hidden action buttons */
+        .action-buttons {
+            display: none;
+            position: fixed;
+            bottom: 120px;
+            right: 20px;
+            gap: 10px;
+            flex-direction: column;
+        }
+
+        .action-buttons button {
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            color: white;
+            background-color: #555;
+        }
+        input::placeholder{
+            color: white;
+        }
+        .info{
+            display: grid;
+            align-items: left !important;
+        }
+
+        /* User Comment Section Styling */
+.comment-section {
+    position: absolute;
+    bottom: 160px;
+    left: 20px;
+    right: 20px;
+    max-height: 200px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.user-comment {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.user-comment img.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid white;
+}
+
+.info {
+    display: flex;
+    flex-direction: column;
+    color: white;
+    font-size: 14px;
+    gap: 5px;
+}
+
+.username {
+    font-weight: bold;
+    color: #FFD700; /* Customize the username color */
+}
+
+.timestamp {
+    font-size: 12px;
+    color: #d3d3d3;
+}
+
+/* Message Styling */
+#message-display p {
+    background-color: #444;
+    padding: 10px;
+    border-radius: 10px;
+    margin-top: 10px;
+    word-wrap: break-word;
+    color: white;
+}
+a{
+    text-decoration: none;
+}
     </style>
 </head>
 <body>
     <div class="live-stream-container">
         <!-- Live Stream Video -->
         <div class="stream">
-            <div id="local-player" class="live-video"></div>
+            <video src="assets/images/reels/video5.mp4" autoplay muted loop class="live-video"></video>
+        </div>
+ 
+         <!-- User Info and Followers -->
+         <div class="user-info">
+             <img src="assets/images/user/pic1.jpg" alt="User Avatar" class="user-avatar">
+             <div class="user-details">
+                <a href="profile.html">
+                 <p class="username">Micah Clarke</p>
+                </a>
+                 <p class="live-status">Live now • 20 Viewers</p>
+             </div>
+             <button id="start-broadcast" class="follow-btn">2k likes</button>
+         </div>
+         
+ 
+         <!-- Interaction Icons -->
+         <div class="interaction-icons">
+             <div class="likes">
+                 <i class="fa fa-heart"></i>
+                 <span>0</span>
+             </div>
+             <div class="shares">
+                 <i class="fa fa-star"></i>
+                 <span>55</span>
+             </div>
+         </div>
+
+        <!-- Comment Section -->
+        <div class="comment-section" id="comment-section">
+            <!-- Existing Comments Will Be Appended Here -->
         </div>
 
-        <!-- User Info and Followers -->
-        <div class="user-info">
-            <img src="assets/images/user/pic1.jpg" alt="User Avatar" class="user-avatar">
-            <div class="user-details">
-                <p class="username">Micah Clarke</p>
-                <p class="live-status">Live now • 20 Viewers</p>
-            </div>
-            <button id="start-broadcast" class="follow-btn">2k views</button>
+
+
+        <!-- Plus Button for More Actions -->
+        <div class="plus-button" style="position: fixed; right: 20px; bottom: 80px;">
+            <i class="fa fa-plus" id="plus-btn"></i>
         </div>
 
-        <!-- Interaction Icons -->
-        <div class="interaction-icons">
-            <div class="likes">
-                <i class="fa fa-heart"></i>
-                <span>15k</span>
-            </div>
-            <div class="shares">
-                <i class="fa fa-star"></i>
-                <span>55</span>
-            </div>
+        
+
+        <!-- Hidden Action Buttons -->
+        <div class="action-buttons" id="action-buttons">
+            <i class="fa fa-share" id="plus-btn"></i>
+            <i class="fa fa-camera" id="plus-btn"></i>
+            <i class="fa fa-gift" id="plus-btn"></i>
         </div>
 
         <!-- Message Input Box -->
         <div class="message-input-container">
-            <input type="text" placeholder="Say Something..." id="message-input">
+            <input type="text" placeholder="Say something..." id="message-input">
             <button id="send-btn">
-                <i class="fa fa-paper-plane"></i>
+                <i class="fa fa-arrow-up"></i>
             </button>
         </div>
 
@@ -221,62 +359,99 @@
     <script>
         const messageInput = document.getElementById('message-input');
         const sendBtn = document.getElementById('send-btn');
-        const messageDisplay = document.getElementById('message-display');
+        const commentSection = document.getElementById('comment-section');
+        const plusBtn = document.getElementById('plus-btn');
+        const actionButtons = document.getElementById('action-buttons');
 
-        // Function to display typed message on screen
+        // Toggle action buttons visibility
+        plusBtn.addEventListener('click', () => {
+            if (actionButtons.style.display === 'none' || actionButtons.style.display === '') {
+                actionButtons.style.display = 'flex';
+            } else {
+                actionButtons.style.display = 'none';
+            }
+        });
+    
+        // User data (this can be dynamic)
+        const currentUser = {
+            avatar: 'assets/images/user/pic1.jpg',
+            username: '@johnson_joy'
+        };
+    
+        // Function to display typed message with user info in the comment section
         sendBtn.addEventListener('click', () => {
             const messageText = messageInput.value.trim();
             if (messageText) {
-                const messageElement = document.createElement('p');
-                messageElement.textContent = messageText;
-                messageDisplay.appendChild(messageElement);
-                messageInput.value = ''; // Clear the input after sending
+                // Create a new comment element with user info and message
+                const userComment = document.createElement('div');
+                userComment.classList.add('user-comment');
+    
+                userComment.innerHTML = `
+                    <img src="${currentUser.avatar}" class="user-avatar" alt="User Avatar">
+                    <div class="info">
+                        <a style="color: white; text-decoration: none;" href="profile-detail.html">
+                            <p class="username">${currentUser.username}</p>
+                        </a>
+                        <span class="comment-text">${messageText}</span>
+                    </div>
+                `;
+    
+                // Append the new comment to the comment section
+                commentSection.appendChild(userComment);
+    
+                // Clear the input after sending
+                messageInput.value = '';
             }
         });
-
     </script>
+    <script>
+        // Selecting necessary elements
+        const liveStreamContainer = document.querySelector('.live-stream-container');
+        const likesCounter = document.querySelector('.likes span');
+        let likeCount = parseInt(likesCounter.innerText); // Starting like count
+    
+        // Function to create and animate the love heart
+        function createHeart(event) {
+            const heart = document.createElement('i');
+            heart.classList.add('fa', 'fa-heart');
+            heart.style.position = 'absolute';
+            heart.style.left = `${event.clientX}px`;
+            heart.style.top = `${event.clientY}px`;
+            heart.style.color = 'red';
+            heart.style.fontSize = '24px';
+            heart.style.animation = 'float-up 1s ease-out forwards';
+            liveStreamContainer.appendChild(heart);
+    
+            // Remove the heart after the animation
+            setTimeout(() => {
+                heart.remove();
+            }, 1000);
+        }
+    
+        // Function to handle screen tap to increase like count and animate hearts
+        function handleTap(event) {
+            // Increase the like count
+            likeCount += 1;
+            likesCounter.innerText = likeCount;
+    
+            // Show the love heart animation at the tap location
+            createHeart(event);
+        }
+    
+        // Attach event listener for tap on the live stream container
+        liveStreamContainer.addEventListener('click', handleTap);
+    
+        // CSS for heart float animation
+        const style = document.createElement('style');
+        style.innerHTML = `
+            @keyframes float-up {
+                0% { transform: translateY(0); opacity: 1; }
+                100% { transform: translateY(-100px); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+    
+    
 </body>
-<script>
-    const APP_ID = '279b4ee2efca4b03ab11f369a80abfd9'; // Replace with your Agora App ID
-const TOKEN = '007eJxTYFi/dMeSI3ecqp3ZqmSK+ZNjSn0k+s7f/77W0zRb9PvybWcVGIzMLZNMUlONUtOSE02SDIwTkwwN04zNLBMtDBKT0lIsDyixpDcEMjLsqcxgZWSAQBCfiyEnsyy1uKQoNTGXgQEAR8Eimw=='; // Replace with your Agora Token (optional if you haven't enabled tokens)
-const CHANNEL_NAME = 'livestream'; // Channel name for the live stream
-
-let client = AgoraRTC.createClient({ mode: 'live', codec: 'vp8' });
-let localTracks = { videoTrack: null, audioTrack: null };
-
-// Join the channel and start broadcasting
-async function startLiveStream() {
-    await client.join(APP_ID, CHANNEL_NAME, TOKEN || null);
-    
-    // Create and publish local tracks
-    localTracks.audioTrack = await AgoraRTC.createMicrophoneAudioTrack();
-    localTracks.videoTrack = await AgoraRTC.createCameraVideoTrack();
-    
-    localTracks.videoTrack.play('local-player');
-    
-    await client.publish(Object.values(localTracks));
-    console.log('Live stream started');
-}
-
-// Event listener for start button
-document.getElementById('start-broadcast').addEventListener('click', () => {
-    startLiveStream().catch(error => {
-        console.error('Error starting live stream', error);
-    });
-});
-
-// Optionally handle message sending in the chat
-document.getElementById('send-btn').addEventListener('click', () => {
-    const messageText = messageInput.value.trim();
-    if (messageText) {
-        const messageElement = document.createElement('p');
-        messageElement.textContent = messageText;
-        messageDisplay.appendChild(messageElement);
-        messageInput.value = ''; // Clear the input after sending
-    }
-});
-
-</script>
-<script src="https://cdn.agora.io/sdk/release/AgoraRTC_N.js"></script>
-
 </html>

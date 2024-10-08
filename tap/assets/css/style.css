@@ -351,7 +351,7 @@ body {
     margin-top: 3rem;
 }
 .slide {
-    width: 17rem!important;
+    width: 17rem !important;
     margin: 0 1rem;
     border-radius: 15px;
     padding: 1.25rem;
@@ -375,7 +375,7 @@ body {
     justify-content: space-between;
     align-items: center;
     color: #ffffff;
-    padding: 0 3rem;
+    padding: 1rem;
 }
 .guid-social a {
     display: flex;
@@ -557,11 +557,11 @@ body {
 
 }
 .frens-profile-photo {
-    background-color: aquamarine;
     width: 3.5rem;
     height: 3.5rem;
-    border-radius: 100%;
     margin-right: 0.75rem;
+    align-items: center;
+    justify-content: center;
 }
 .frens-profile-data h4{
     margin-bottom: 0.25rem;
@@ -599,6 +599,7 @@ body {
     justify-content: center;
     align-items: center;
     margin-top: 1rem;
+    margin-bottom: 40px;
 }
 .earn-more img {
     margin-bottom: 1.5rem;
@@ -689,4 +690,24 @@ body {
 }
 .top-300{
     justify-content: space-between;
+}
+.task{
+    width: 90%;
+}
+.task-item{
+    border-bottom-width: 1px;
+    border-bottom: 1px solid #807b7b26;
+    cursor: pointer !important;
+
+}
+a{
+    color: white !important;
+    cursor: pointer !important;
+}
+.social-icon{
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    align-self: center;
+    border: 2px solid #ffefef26;;
 }

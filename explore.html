@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<!-- Mirrored from datingkit.w3itexpert.com/xhtml/explore.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 19 Oct 2023 01:40:18 GMT -->
+<!-- Mirrored from datingkit.w3itexpert.com/xhtml/wishlist.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 19 Oct 2023 01:40:16 GMT -->
 <head>
 	
 	<!-- Title -->
@@ -20,13 +20,16 @@
 	<meta property="og:image" content="https://datingkit.WorldConnect.com/xhtml/error.html">
 	<meta name="format-detection" content="telephone=no">
 
-
 	<!-- Favicons Icon -->
 	<link rel="shortcut icon" type="image/x-icon" href="assets/images/favicon.png">
 	
+	<!-- PWA Version -->
+	<link rel="manifest" href="manifest.json">
+    
     <!-- Global CSS -->
 	<link href="assets/vendor/bootstrap-select/dist/css/bootstrap-select.min.css" rel="stylesheet">
 	<link rel="stylesheet" href="assets/vendor/bootstrap-touchspin/dist/jquery.bootstrap-touchspin.min.css">
+	<link rel="stylesheet" type="text/css" href="assets/vendor/nouislider/nouislider.min.css">
 	<link rel="stylesheet" href="assets/vendor/swiper/swiper-bundle.min.css">
     
 	<!-- Stylesheets -->
@@ -37,8 +40,20 @@
 	<link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:opsz,wght@6..12,200;6..12,300;6..12,400;6..12,500;6..12,600;6..12,700;6..12,800;6..12,900;6..12,1000&amp;family=Poppins:wght@100;200;300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
 
+	<style>
+		.green-dot {
+		  width: 10px;
+		  height: 10px;
+		  background-color: rgb(0, 215, 0);
+		  border-radius: 50%;
+		  display: inline-block;
+		}
+		.dz-meta{
+			align-items: center;
+		}
+	  </style>
 </head>   
-<body>
+<body class="header-large">
 <div class="page-wrapper">
     
 	<!-- Preloader -->
@@ -57,11 +72,14 @@
 						<a href="javascript:void(0);" class="back-btn">
 							<i class="icon feather icon-chevron-left"></i>
 						</a>
-						<h6 class="title">Explore</h6>
+						<h6 class="title">Online users</h6>
 					</div>
-					<div class="mid-content">
+					<div class="mid-content header-logo">
 					</div>
-					<div class="right-content">
+					<div class="right-content dz-meta">
+						<a href="filter.html" class="filter-icon">
+							<i class="flaticon flaticon-settings-sliders"></i>
+						</a>
 					</div>
 				</div>
 			</div>
@@ -69,80 +87,173 @@
 	<!-- Header -->
 	
 	<!-- Page Content Start -->
-	<div class="page-content space-top p-b60">
+	<div class="page-content space-top p-b65">
 		<div class="container">
-			<div class="row g-3">
-				<div class="col-md-6 col-12">
-					<div class="dz-media-card style-3">
-						<div class="dz-media">
-							<img src="assets/images/explore/pic1.png" alt="">
-						</div>
-						<div class="dz-content">
-							<h3 class="title">Free Tonight</h3>
-							<p>Down for something spontaneous</p>
-							<p>2089 members</p>
-							<a href="javascript:void(0);" class="btn btn-light rounded-xl">JOIN NOW</a>
-						</div>
+			<div class="row g-2">
+				<div class="col-6">
+					<div class="dz-media-card">
+						<a href="profile-detail.html">
+							<div class="dz-media">
+								<img src="assets/images/liked/pic1.png" alt="">
+							</div>
+							<div class="dz-content">
+								<h6 class="title">Olamide, 27</h6>	
+								<span class="about">Ibadan Oyo</span>
+								<div class="dz-meta">
+                                    <span class="status">Active</span>
+                                    <div class="green-dot"></div>
+                                </div>	
+							</div>
+						</a>
 					</div>
 				</div>
-				<div class="col-md-6 col-12">
-					<div class="dz-media-card style-3">
-						<div class="dz-media">
-							<img src="assets/images/explore/pic2.png" alt="">
-						</div>
-						<div class="dz-content">
-							<h3 class="title">Looking for Love</h3>
-							<p>Sweep me off my feet</p>
-							<a href="javascript:void(0);" class="btn btn-light rounded-xl">JOIN NOW</a>
-						</div>
+				<div class="col-6">
+					<div class="dz-media-card">
+						<a href="profile-detail.html">
+							<div class="dz-media">
+								<img src="assets/images/liked/pic2.png" alt="">
+							</div>
+							<div class="dz-content">
+								<h6 class="title">Abby, 31</h6>	
+								<span class="about">Lagos, Ikeja</span>	
+								<div class="dz-meta">
+                                    <span class="status">Active</span>
+                                    <div class="green-dot"></div>
+                                </div>	
+							</div>
+						</a>
 					</div>
 				</div>
-				<div class="col-md-6 col-12">
-					<div class="dz-media-card style-3">
-						<div class="dz-media">
-							<img src="assets/images/explore/pic3.png" alt="">
-						</div>
-						<div class="dz-content">
-							<h3 class="title">Let's be Friends</h3>
-							<p>Maybe even besties</p>
-							<a href="javascript:void(0);" class="btn btn-light rounded-xl">JOIN NOW</a>
-						</div>
+				<div class="col-6">
+					<div class="dz-media-card">
+						<a href="profile-detail.html">
+							<div class="dz-media">
+								<img src="assets/images/liked/pic3.png" alt="">
+							</div>
+							<div class="dz-content">
+								<h6 class="title">Jumoke, 20</h6>	
+								<span class="about">Kwara Ilorin</span>	
+								<div class="dz-meta">
+                                    <span class="status">Active</span>
+                                    <div class="green-dot"></div>
+                                </div>	
+							</div>
+						</a>
 					</div>
 				</div>
-				<div class="col-md-6 col-12">
-					<div class="dz-media-card style-3">
-						<div class="dz-media">
-							<img src="assets/images/explore/pic4.png" alt="">
-						</div>
-						<div class="dz-content">
-							<h3 class="title">Coffee Date</h3>
-							<p>Take me to your favorite cafe</p>
-							<a href="javascript:void(0);" class="btn btn-light rounded-xl">JOIN NOW</a>
-						</div>
+				<div class="col-6">
+					<div class="dz-media-card">
+						<a href="profile-detail.html">
+							<div class="dz-media">
+								<img src="assets/images/liked/pic4.png" alt="">
+							</div>
+							<div class="dz-content">
+								<h6 class="title">Veronica, 29</h6>	
+								<span class="about">Anambra, Orji</span>
+								<div class="dz-meta">
+                                    <span class="last-seen">Last seen <br> 2 hours ago</span>
+                                </div>		
+							</div>
+						</a>
 					</div>
 				</div>
-				<div class="col-md-6 col-12">
-					<div class="dz-media-card style-3">
-						<div class="dz-media">
-							<img src="assets/images/explore/pic5.png" alt="">
-						</div>
-						<div class="dz-content">
-							<h3 class="title">Get Photo Verified</h3>
-							200+ members verified
-							<a href="javascript:void(0);" class="btn btn-light rounded-xl">JOIN NOW</a>
-						</div>
+				<div class="col-6">
+					<div class="dz-media-card">
+						<a href="profile-detail.html">
+							<div class="dz-media">
+								<img src="assets/images/liked/pic5.png" alt="">
+							</div>
+							<div class="dz-content">
+								<h6 class="title">Blessing, 22</h6>	
+								<span class="about">Lagos</span>
+								<div class="dz-meta">
+                                    <span class="last-seen">Last seen <br> 2 hours ago</span>
+                                </div>		
+							</div>
+						</a>
 					</div>
 				</div>
-				<div class="col-md-6 col-12">
-					<div class="dz-media-card style-3">
-						<div class="dz-media">
-							<img src="assets/images/explore/pic2.png" alt="">
-						</div>
-						<div class="dz-content">
-							<h3 class="title">live Streaming</h3>
-							<p>24 people on live</p>
-							<a href="javascript:void(0);" class="btn btn-light rounded-xl">JOIN NOW</a>
-						</div>
+				<div class="col-6">
+					<div class="dz-media-card">
+						<a href="profile-detail.html">
+							<div class="dz-media">
+								<img src="assets/images/liked/pic6.png" alt="">
+							</div>
+							<div class="dz-content">
+								<h6 class="title">Mamatee, 22</h6>	
+								<span class="about">Osun, ile-ife</span>
+								<div class="dz-meta">
+                                    <span class="status">Active</span>
+                                    <div class="green-dot"></div>
+                                </div>		
+							</div>
+						</a>
+					</div>
+				</div>
+				<div class="col-6">
+					<div class="dz-media-card">
+						<a href="profile-detail.html">
+							<div class="dz-media">
+								<img src="assets/images/liked/pic4.png" alt="">
+							</div>
+							<div class="dz-content">
+								<h6 class="title">Hassana, 35</h6>	
+								<span class="about">Sokoto gada</span>	
+								<div class="dz-meta">
+                                    <span class="status">Active</span>
+                                    <div class="green-dot"></div>
+                                </div>	
+							</div>
+						</a>
+					</div>
+				</div>
+				<div class="col-6">
+					<div class="dz-media-card">
+						<a href="profile-detail.html">
+							<div class="dz-media">
+								<img src="assets/images/liked/pic1.png" alt="">
+							</div>
+							<div class="dz-content">
+								<h6 class="title">Cynthia, 24</h6>	
+								<span class="about">Portharcourt, GRA</span>
+								<div class="dz-meta">
+                                    <span class="status">Active</span>
+                                    <div class="green-dot"></div>
+                                </div>		
+							</div>
+						</a>
+					</div>
+				</div>
+				<div class="col-6">
+					<div class="dz-media-card">
+						<a href="profile-detail.html">
+							<div class="dz-media">
+								<img src="assets/images/liked/pic2.png" alt="">
+							</div>
+							<div class="dz-content">
+								<h6 class="title">Temmy, 22</h6>	
+								<span class="about">Kwara ilorin</span>	
+								<div class="dz-meta">
+                                    <span class="last-seen">Last seen <br> 2 hours ago</span>
+                                </div>	
+							</div>
+						</a>
+					</div>
+				</div>
+				<div class="col-6">
+					<div class="dz-media-card">
+						<a href="profile-detail.html">
+							<div class="dz-media">
+								<img src="assets/images/liked/pic5.png" alt="">
+							</div>
+							<div class="dz-content">
+								<h6 class="title">Oluwaseun, 29</h6>	
+								<span class="about">Ondo akure</span>	
+								<div class="dz-meta">
+                                    <span class="last-seen">Last seen <br> 2 hours ago</span>
+                                </div>	
+							</div>
+						</a>
 					</div>
 				</div>
 			</div>
@@ -176,12 +287,12 @@
 ***********************************-->
 <script src="assets/js/jquery.js"></script>
 <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-<script src="assets/vendor/swiper/swiper-bundle.min.js"></script><!-- Swiper -->
-<script src="assets/vendor/bootstrap-touchspin/dist/jquery.bootstrap-touchspin.min.js"></script><!-- Swiper -->
-<script src="assets/js/dz.carousel.js"></script><!-- Swiper -->
+<script src="assets/vendor/wnumb/wNumb.js"></script><!-- WNUMB -->
+<script src="assets/vendor/nouislider/nouislider.min.js"></script><!-- NOUSLIDER MIN JS-->
 <script src="assets/js/settings.js"></script>
 <script src="assets/js/custom.js"></script>
+<script src="index.js"></script>
 </body>
 
-<!-- Mirrored from datingkit.w3itexpert.com/xhtml/explore.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 19 Oct 2023 01:40:19 GMT -->
+<!-- Mirrored from datingkit.w3itexpert.com/xhtml/wishlist.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 19 Oct 2023 01:40:18 GMT -->
 </html>
