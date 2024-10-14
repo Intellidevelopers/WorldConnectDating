@@ -1,7 +1,27 @@
+<?php
+// Start the session at the beginning of the file
+session_start();
+
+// Include your database connection file
+include('dbconn.php');
+
+// Check if 'user_id' is set in $_SESSION
+if (!isset($_SESSION['user_id'])) {
+    // Redirect or display a message for unauthenticated users
+    header("Location: login.php");
+    exit; // Stop further execution
+}
+
+// Get the logged-in user ID from the session
+$user_id = $_SESSION['user_id'];
+
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 
-<!-- Mirrored from datingkit.w3itexpert.com/xhtml/profile.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 19 Oct 2023 01:39:55 GMT -->
+<!-- Mirrored from datingkit.w3itexpert.com/xhtml/profile.php by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 19 Oct 2023 01:39:55 GMT -->
 <head>
 	
 	<!-- Title -->
@@ -46,6 +66,14 @@
             transition: transform 0.3s ease-in-out;
             cursor: pointer;
 		}
+		.img{
+			width: 400px;
+			border-radius: 300px;
+			height: 50px;
+		}
+		.name{
+			margin-bottom: -20px
+		}
 	</style>
 </head>   
 <body class="header-large">
@@ -80,7 +108,43 @@
 			</div>
 		</header>
 	<!-- Header -->
-	
+	<?php
+
+// Check if 'user_id' is set in $_SESSION
+if (isset($_SESSION['user_id'])) {
+    $userId = $_SESSION['user_id'];
+
+    // Function to get user details by ID from the database
+    function getUserById($conn, $userId) {
+        $user = null;
+
+        // Prepare and execute query to fetch user by ID using a prepared statement
+        $query = "SELECT * FROM users WHERE id = ?";
+        $stmt = mysqli_prepare($conn, $query);
+
+        if ($stmt) {
+            mysqli_stmt_bind_param($stmt, "i", $userId);
+            mysqli_stmt_execute($stmt);
+
+            $result = mysqli_stmt_get_result($stmt);
+
+            if ($result && mysqli_num_rows($result) > 0) {
+                $user = mysqli_fetch_assoc($result);
+            }
+
+            mysqli_stmt_close($stmt);
+        }
+
+        return $user;
+    }
+
+    // Get user details by ID
+    $user = getUserById($conn, $userId);
+
+    // Check if user exists and display user information
+    if ($user) {
+        // Display user profile information within HTML structure
+        ?>
 	<!-- Page Content Start -->
 	<div class="page-content space-top p-b60">
 		<div class="container pt-0"> 
@@ -90,21 +154,16 @@
 						<a href="setting.html" class="setting dz-icon">
 							<i class="flaticon flaticon-setting"></i>
 						</a>
-						<div class="media rounded-circle">
-							<img src="assets/images/user/pic1.jpg" alt="profile-image">
-							<svg class="radial-progress m-b20" data-percentage="40" viewBox="0 0 80 80">
-								<circle class="incomplete" cx="40" cy="40" r="35"></circle>
-								<circle class="complete" cx="40" cy="40" r="35" style="stroke-dashoffset: 39.58406743523136;"></circle>
-							</svg>
-							<div class="data-fill"><span>40%</span></div>
+						<div class="media">
+							<img src="<?= $user['profilepic']; ?>" alt="profile-image" class="img">
 						</div>
-						<a href="edit-profile.html" class="edit-profile dz-icon">
+						<a href="edit-profile.php" class="edit-profile dz-icon">
 							<i class="flaticon flaticon-pencil-2"></i>
 						</a>
 					</div>
 					<div class="profile-detail">
-						<h5 class="name">Josiah, 27</h5>
-						<p class="mb-0 "><i class="icon feather icon-map-pin me-1"></i> Kwara ilorin, Nigeria</p>
+						<h5 class="name"><?= $user['first_name']; ?>, <?= $user['dob']; ?></h5>
+						<p class="mb-0 " id="location"></p>
 					</div>
 				</div>
 				<div class="row g-2 mb-5">
@@ -183,44 +242,29 @@
 
 				<div class="profile-photos">
 					<div class="row g-3">
-						<div class="col-4">
-							<div class="photo-box">
-								<img src="assets/images/user/pic1.jpg" width="200" alt="photo">
-							</div>
-						</div>
-						<div class="col-4">
-							<div class="photo-box">
-								<img src="assets/images/user/pic2.jpg" width="200" alt="photo">
-							</div>
-						</div>
-						<div class="col-4">
-							<div class="photo-box">
-								<img src="assets/images/user/pic3.jpg" width="200" alt="photo">
-							</div>
-						</div>
-						<div class="col-4">
-							<div class="photo-box">
-								<img src="assets/images/user/pic5.jpg" width="200" alt="photo">
-							</div>
-						</div>
-						<div class="col-4">
-							<div class="photo-box">
-								<img src="assets/images/user/pic3.jpg" width="200" alt="photo">
-							</div>
-						</div>
-						<div class="col-4">
-							<div class="photo-box">
-								<img src="assets/images/user/pic5.jpg" width="200" alt="photo">
-							</div>
-						</div>
+                            <div class="col-4">
+                                <div class="photo-box">
+                                    <img src="<?= $user['profilepic']; ?>" width="200" alt="photo">
+                                </div>
+                            </div>
 					</div>    
 				</div>
-				
 			</div>
-		</div> 
+		</div>
 	</div>
 	<!-- Page Content End -->
-	
+	<?php
+    } else {
+        echo "<p>User not found</p>";
+    }
+} else {
+    // Redirect or display a message for unauthenticated users
+    header("Location: login.php");
+    exit; // Stop further execution
+}
+
+mysqli_close($conn); // Close database connection
+?>
 	<!-- Like OffCanvas -->
     <div class="offcanvas offcanvas-bottom" tabindex="-1" id="offcanvasBottom">
 		<button type="button" class="btn-close drage-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
@@ -269,7 +313,7 @@
 	<!-- Menubar -->
 	<div class="menubar-area footer-fixed">
 		<div class="toolbar-inner menubar-nav">
-			<a href="home.html" class="nav-link">
+			<a href="home.php?user_id=<?php echo $user_id; ?>" class="nav-link">
 				<i class="flaticon flaticon-dog-house"></i>
 			</a>
 			<a href="explore.html" class="nav-link">
@@ -281,7 +325,7 @@
 			<a href="chat-list.html" class="nav-link">
 				<i class="flaticon flaticon-chat-1"></i>
 			</a>
-			<a href="profile.html" class="nav-link active">
+			<a href="profile.php" class="nav-link active">
 				<i class="flaticon flaticon-user"></i>
 			</a>
 		</div>
@@ -299,6 +343,56 @@
 <script src="assets/js/settings.js"></script>
 <script src="assets/js/custom.js"></script>
 </body>
+<script>
+    // Automatically get the user's location when the page loads
+    window.onload = function() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPosition, showError);
+        } else {
+            document.getElementById('location').innerText = "Geolocation is not supported by this browser.";
+        }
+    };
 
-<!-- Mirrored from datingkit.w3itexpert.com/xhtml/profile.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 19 Oct 2023 01:39:55 GMT -->
+    function showPosition(position) {
+        const lat = position.coords.latitude;
+        const lon = position.coords.longitude;
+        // Optionally, you can reverse geocode using a free API (e.g., OpenCageData)
+        reverseGeocode(lat, lon);
+    }
+
+    function showError(error) {
+        switch(error.code) {
+            case error.PERMISSION_DENIED:
+                document.getElementById('location').innerText = "User denied the request for Geolocation.";
+                break;
+            case error.POSITION_UNAVAILABLE:
+                document.getElementById('location').innerText = "Location information is unavailable.";
+                break;
+            case error.TIMEOUT:
+                document.getElementById('location').innerText = "The request to get user location timed out.";
+                break;
+            case error.UNKNOWN_ERROR:
+                document.getElementById('location').innerText = "An unknown error occurred.";
+                break;
+        }
+    }
+
+    function reverseGeocode(lat, lon) {
+        const apiKey = 'ecf02c517f714576bf138abddb097dcb'; // Replace with your OpenCage API key
+        const url = `https://api.opencagedata.com/geocode/v1/json?q=${lat}+${lon}&key=${apiKey}`;
+        
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                if (data.results && data.results.length > 0) {
+                    const { city, state } = data.results[0].components;
+                    document.getElementById('location').innerText += `\n${city} ${state}`;
+                } else {
+                    document.getElementById('location').innerText += `\nCity/State not found.`;
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+</script>
+<!-- Mirrored from datingkit.w3itexpert.com/xhtml/profile.php by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 19 Oct 2023 01:39:55 GMT -->
 </html>

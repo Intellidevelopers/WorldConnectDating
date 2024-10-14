@@ -1,9 +1,34 @@
+<?php
+// Include configuration file
+include('dbconn.php');
+// Start the session
+session_start();
+// Check if the user is logged in
+if (!isset($_SESSION['user_id'])) {
+    // Redirect to login page if not logged in
+    header("Location: login.php");
+    exit();
+}
+
+// Get the logged-in user ID from the session
+$user_id = $_SESSION['user_id'];
+// Fetch user details from the database
+$sql = "SELECT first_name, dob, interest, profilepic,education, work_experience,sexual_orientation, about, company, occupation, kids_ages FROM users WHERE id = ?";
+$stmt = mysqli_stmt_init($conn);
+if (mysqli_stmt_prepare($stmt, $sql)) {
+    mysqli_stmt_bind_param($stmt, "i", $user_id);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    $user = mysqli_fetch_assoc($result);
+} else {
+    // Handle database error
+    echo "<div class='alert alert-danger'>Database error.</div>";
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
-
-<!-- Mirrored from datingkit.w3itexpert.com/xhtml/profile-detail.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 19 Oct 2023 01:40:18 GMT -->
 <head>
-	
 	<!-- Title -->
 	<title>WorldConnect - Dating Forum</title>
 
@@ -46,6 +71,9 @@
 			align-items: center;
 			justify-content: space-between;
 		}
+		.title2{
+			margin-bottom: -20px
+		}
 	</style>
 </head>   
 <body class="bg-white">
@@ -84,12 +112,12 @@
 			<div class="detail-area">
 				<div class="dz-media-card style-2">
 					<div class="dz-media">
-						<img src="assets/images/liked/pic2.png" alt="">
+						<img src="<?php echo htmlspecialchars($user['profilepic']); ?>" alt="">
 					</div>
 					<div class="dz-content">
 						<div class="left-content">
-							<h4 class="title">Chelsea, 21</h4>
-							<p class="mb-0"><i class="icon feather icon-map-pin"></i> 5 miles away</p>
+							<h4 class="title2"><?php echo htmlspecialchars($user['first_name']); ?>, <?php echo htmlspecialchars($user['dob']); ?></h4>
+							<p class="mb-0" id="location"><i class="icon feather icon-map-pin"></i></p>
 						</div>
 						<a href="javascript:void(0);" onclick="alert('You followed this user')" class="dz-icon"><i class="flaticon flaticon-star-1"></i></a>
 					</div>
@@ -97,65 +125,58 @@
 				<div class="detail-bottom-area">
 					<div class="about">
 							<h6 class="title">Basic information</h6>
-						<p class="para-text">Just moved back to jakarata after living at India for 10+ years. Di luar terlifiat cenger - center di dalam.</p>					
+						<p class="para-text"><?php echo htmlspecialchars($user['about']); ?></p>					
 					</div>
-					<div class="intrests mb-3">
-						<h6 class="title">Intrests</h6>
+					<div class="flex">
+						<div class="intrests mb-3">
+							<h6 class="title">Education</h6>
+							<ul class="dz-tag-list">
+								<li> 
+									<div class="dz-tag">
+										<span><?php echo htmlspecialchars($user['education']); ?></span>
+									</div>
+								</li>
+							</ul>
+						</div>
+
+						<div class="intrests mb-3">
+						<h6 class="title">Occupation</h6>
 						<ul class="dz-tag-list">
 							<li> 
 								<div class="dz-tag">
-									<i class="icon feather icon-camera"></i>
-									<span>Photography</span>
+									<span><?php echo htmlspecialchars($user['occupation']); ?></span>
 								</div>
 							</li>
+						</ul>
+					</div>
+
+					<div class="intrests mb-3">
+						<h6 class="title">Sexual Orientation</h6>
+						<ul class="dz-tag-list">
 							<li> 
 								<div class="dz-tag">
-									<i class="icon feather icon-music"></i>
-									<span>Music</span>
+									<span><?php echo htmlspecialchars($user['sexual_orientation']); ?></span>
 								</div>
 							</li>
+						</ul>
+					</div>
+					</div>
+					<div class="languages mb-3">
+						<h6 class="title">Comapany</h6>
+						<ul class="dz-tag-list">
 							<li> 
 								<div class="dz-tag">
-									<i class="icon feather icon-book"></i>
-									<span>Study</span>
-								</div>
-							</li>
-							<li> 
-								<div class="dz-tag">
-									<i class="icon feather icon-film"></i>
-									<span>Movies</span>
-								</div>
-							</li>
-							<li> 
-								<div class="dz-tag">
-									<i class="icon feather icon-instagram"></i>
-									<span>Instagram</span>
-								</div>
-							</li>
-							<li> 
-								<div class="dz-tag">
-									<i class="icon fa-solid fa-location-dot"></i>
-									<span>Travelling</span>
+									<span><?php echo htmlspecialchars($user['company']); ?></span>
 								</div>
 							</li>
 						</ul>
 					</div>
 					<div class="languages mb-3">
-						<h6 class="title">Languages</h6>
+						<h6 class="title">Kids Ages</h6>
 						<ul class="dz-tag-list">
 							<li> 
 								<div class="dz-tag">
-									<span>English</span>
-								</div>
-							</li>
-							<li> 
-								<div class="dz-tag">
-									<span>Spanish</span>
-								</div>
-							</li>
-							<li> 
-								<div class="dz-tag">
-									<span>German</span>
+									<span><?php echo htmlspecialchars($user['kids_ages']); ?></span>
 								</div>
 							</li>
 						</ul>
@@ -165,7 +186,7 @@
 						<ul class="dz-tag-list">
 							<li> 
 								<div class="dz-tag">
-									<span>Sugar mummy</span>
+									<span><?php echo htmlspecialchars($user['interest']); ?></span>
 								</div>
 							</li>
 						</ul>
@@ -178,7 +199,7 @@
 	<!-- Menubar -->
 	<div class="footer fixed">
 		<div class="dz-icon-box">
-			<a href="home.html" title="Not Interested" onclick="alert('You are not interested in this user')" class="icon dz-flex-box dislike"><i class="flaticon flaticon-cross font-18"></i></a>
+			<a href="home.php" title="Not Interested" onclick="alert('You are not interested in this user')" class="icon dz-flex-box dislike"><i class="flaticon flaticon-cross font-18"></i></a>
 			<a href="chat.html" title="Message user" class="icon dz-flex-box super-like"><i class="fa-solid fa-message"></i></a>
 			<a href="wishlist.html" title="Interested" onclick="alert('You are interested in this user')" class="icon dz-flex-box like"><i class="fa-solid fa-heart"></i></a>
 		</div>
@@ -195,7 +216,8 @@
 <script src="assets/js/settings.js"></script>
 <script src="assets/js/custom.js"></script>
 <script src="index.js"></script>
+<script src="location.js"></script>
 </body>
 
-<!-- Mirrored from datingkit.w3itexpert.com/xhtml/profile-detail.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 19 Oct 2023 01:40:18 GMT -->
+<!-- Mirrored from datingkit.w3itexpert.com/xhtml/profile-detail.php by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 19 Oct 2023 01:40:18 GMT -->
 </html>

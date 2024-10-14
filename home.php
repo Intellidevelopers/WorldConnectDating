@@ -1,7 +1,40 @@
+<?php
+// Include configuration file
+include('dbconn.php');
+
+// Start the session
+session_start();
+
+// Check if the user is logged in
+if (!isset($_SESSION['user_id'])) {
+    // Redirect to login page if not logged in
+    header("Location: login.php");
+    exit();
+}
+
+// Get the logged-in user ID from the session
+$user_id = $_SESSION['user_id'];
+
+// Fetch user details from the database
+$sql = "SELECT first_name, email, profilepic FROM users WHERE id = ?";
+$stmt = mysqli_stmt_init($conn);
+if (mysqli_stmt_prepare($stmt, $sql)) {
+    mysqli_stmt_bind_param($stmt, "i", $user_id);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    $user = mysqli_fetch_assoc($result);
+
+} else {
+    // Handle database error
+    echo "<div class='alert alert-danger'>Database error.</div>";
+}
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 
-<!-- Mirrored from datingkit.w3itexpert.com/xhtml/home.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 19 Oct 2023 01:39:45 GMT -->
+<!-- Mirrored from datingkit.w3itexpert.com/xhtml/home.php by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 19 Oct 2023 01:39:45 GMT -->
 <head>
 	
 	<!-- Title -->
@@ -46,6 +79,9 @@
 			border: none;
 			color: antiquewhite;
 		}
+		.title{
+			margin-bottom: -15px
+		}
 	</style>
 </head>   
 <body class="overflow-hidden header-large">
@@ -69,7 +105,7 @@
 						</a>
 					</div>
 					<div class="mid-content header-logo">
-						<a href="home.html">
+						<a href="home.php">
 							<img src="assets/images/logo.png" alt="">
 						</a>
 					</div>
@@ -87,18 +123,18 @@
     <div class="dark-overlay"></div>
 	<div id="sidebar" class="sidebar">
 		<div class="inner-sidebar">
-			<a href="profile.html" class="author-box">
+			<a href="profile.php?user_id=<?php echo $user_id; ?>" class="author-box">
 				<div class="dz-media">
-					<img src="assets/images/user/pic1.jpg" alt="author-image">
+					<img src="<?php echo htmlspecialchars($user['profilepic']); ?>" alt="author-image">
 				</div>
 				<div class="dz-info">
-					<h5 class="name">John Doe</h5>
-					<span>example@gmail.com</span>
+					<h5 class="name"><?php echo htmlspecialchars($user['first_name']); ?></h5>
+					<span><?php echo htmlspecialchars($user['email']); ?></span>
 				</div>
-			</a>
+			</a>                                                                                                               
 			<ul class="nav navbar-nav">	
 				<li>
-					<a class="nav-link active" href="home.html">
+					<a class="nav-link active" href="home.php">
 						<span class="dz-icon">
 							<i class="icon feather icon-home"></i>
 						</span>
@@ -156,11 +192,11 @@
 				</li>
 		
 				<li>
-					<a class="nav-link" href="profile.html">
+					<a class="nav-link" href="notification.php?user_id=<?php echo $user_id; ?>">
 						<span class="dz-icon">
-							<i class="icon feather icon-user"></i>
+							<i class="icon feather icon-bell"></i>
 						</span>
-						<span>Profile</span>
+						<span>Notifications</span>
 					</a>
 				</li>
 				<li>
@@ -173,7 +209,7 @@
 				</li>
 
 				<li>
-					<a class="nav-link" href="login.html">
+					<a class="nav-link" href="logout.php">
 						<span class="dz-icon">
 							<i class="icon feather icon-log-out"></i>
 						</span>
@@ -233,38 +269,72 @@
 	<div class="page-content space-top p-b65">
 		<div class="container">
 			<div class="demo__card-cont dz-gallery-slider">
-				<div class="demo__card">
-					<div class="dz-media">
-						<img src="assets/images/slider/pic1.png" alt="">
-					</div>
-					<div class="dz-content">
-						<div class="left-content">
-							<span class="badge badge-primary d-inline-flex gap-1 mb-2"><i class="icon feather icon-map-pin"></i>Nearby</span>
-							<h4 class="title"><a href="profile-detail.html">Harleen , 24</a></h4>
-							<p class="mb-0"><i class="icon feather icon-map-pin"></i> 3 miles away</p>
-						</div>
-						<a href="javascript:void(0);" class="dz-icon dz-sp-like"><i class="flaticon flaticon-star-1"></i></a>
-					</div>
-					<div class="demo__card__choice m--reject">
-						<i class="fa-solid fa-xmark"></i>
-					</div>
-					<div class="demo__card__choice m--like">
-						<i class="fa-solid fa-check"></i>
-					</div>
-					<div class="demo__card__choice m--superlike">
-						<h5 class="title mb-0">Super Like</h5>
-					</div>
-					<div class="demo__card__drag"></div>
-				</div>
-				
-				<div class="demo__card">
+			<?php
+			// Start the session
+			// Function to get all users from the database
+			function getAllUsers($conn) {
+				$users = [];
+				$query = "SELECT * FROM users"; // Adjust this query based on your needs
+				$result = mysqli_query($conn, $query);
+
+				if ($result && mysqli_num_rows($result) > 0) {
+					while ($row = mysqli_fetch_assoc($result)) {
+						$users[] = $row; // Add each user to the users array
+					}
+				}
+
+				return $users;
+			}
+
+			// Get all users from the database
+			$users = getAllUsers($conn);
+
+			// Check if users exist and display user information
+			if (!empty($users)) {
+				foreach ($users as $user) {
+        // Display user profile information within HTML structure
+        ?>
+        <div class="demo__card">
+            <div class="dz-media">
+                <img src="<?php echo htmlspecialchars($user['profilepic']) ? htmlspecialchars($user['profilepic']) : 'assets/images/slider/pic1.png'; ?>" alt="">
+            </div>
+            <div class="dz-content">
+                <div class="left-content">
+                    <span class="badge badge-primary d-inline-flex gap-1 mb-2"><i class="icon feather icon-map-pin"></i>Nearby</span>
+                    <h4 class="title"><a href="profile-detail.php?id=<?php echo htmlspecialchars($user['id']); ?>"><?php echo htmlspecialchars($user['first_name']) . ', ' . htmlspecialchars($user['dob']); ?></a></h4>
+                    <p class="mb-0" id="location"></p>
+                </div>
+                <a href="javascript:void(0);" class="dz-icon dz-sp-like" data-receiver-id="<?php echo $user['id']; ?>" onclick="sendNotification(<?php echo $user['id']; ?>, 'like')"><i class="flaticon flaticon-star-1"></i></a>
+            </div>
+            <div class="demo__card__choice m--reject">
+                <i class="fa-solid fa-xmark"></i>
+            </div>
+            <div class="demo__card__choice m--like">
+                <i class="fa-solid fa-check"></i>
+            </div>
+            <div class="demo__card__choice m--superlike">
+                <h5 class="title mb-0">Super Like</h5>
+            </div>
+            <div class="demo__card__drag"></div>
+        </div>
+        <?php
+    }
+} else {
+    echo "<p>No users found</p>";
+}
+
+// Close database connection
+mysqli_close($conn); // Close database connection
+?>
+
+				<!-- <div class="demo__card">
 					<div class="dz-media">
 						<img src="assets/images/slider/pic3.png" alt="">
 					</div>
 					<div class="dz-content">
 						<div class="left-content">
 							<span class="badge badge-primary d-inline-flex gap-1 mb-2"><i class="icon feather icon-map-pin"></i>Nearby</span>
-							<h4 class="title"><a href="profile-detail.html">Richard , 21</a></h4>
+							<h4 class="title"><a href="profile-detail.php">Richard , 21</a></h4>
 							<p class="mb-0"><i class="icon feather icon-map-pin"></i> 5 miles away</p>
 						</div>
 						<a href="javascript:void(0);" class="dz-icon dz-sp-like"><i class="flaticon flaticon-star-1"></i></a>
@@ -279,15 +349,15 @@
 						<h5 class="title mb-0">Super Like</h5>
 					</div>
 					<div class="demo__card__drag"></div>
-				</div>
+				</div> -->
 				
-				<div class="demo__card">
+				<!-- <div class="demo__card">
 					<div class="dz-media">
 						<img src="assets/images/slider/pic4.png" alt="">
 					</div>
 					<div class="dz-content">
 						<div class="left-content">
-							<h4 class="title"><a href="profile-detail.html">Natasha , 22</a></h4>
+							<h4 class="title"><a href="profile-detail.php">Natasha , 22</a></h4>
 							<p class="mb-0"><i class="icon feather icon-map-pin"></i> 2 miles away</p>
 						</div>
 						<a href="javascript:void(0);" class="dz-icon dz-sp-like"><i class="flaticon flaticon-star-1"></i></a>
@@ -310,7 +380,7 @@
 					</div>
 					<div class="dz-content">
 						<div class="left-content">
-							<h4 class="title"><a href="profile-detail.html">Lisa Ray , 25</a></h4>
+							<h4 class="title"><a href="profile-detail.php">Lisa Ray , 25</a></h4>
 							<ul class="intrest">
 								<li><span class="badge">Photography</span></li>
 								<li><span class="badge">Street Food</span></li>
@@ -338,7 +408,7 @@
 					<div class="dz-content">
 						<div class="left-content">
 							<span class="badge badge-primary mb-2">New here</span>
-							<h4 class="title"><a href="profile-detail.html">Richard , 22</a></h4>
+							<h4 class="title"><a href="profile-detail.php">Richard , 22</a></h4>
 							<ul class="intrest">
 								<li><span class="badge intrest">Climbing</span></li>
 								<li><span class="badge intrest">Skincare</span></li>
@@ -358,7 +428,7 @@
 						<h5 class="title mb-0">Super Like</h5>
 					</div>
 					<div class="demo__card__drag"></div>
-				</div>
+				</div> -->
 			</div>
 		</div>
 	</div>
@@ -367,7 +437,7 @@
 	<!-- Menubar -->
 	<div class="menubar-area footer-fixed">
 		<div class="toolbar-inner menubar-nav">
-			<a href="home.html" class="nav-link active">
+			<a href="home.php" class="nav-link active">
 				<i class="flaticon flaticon-dog-house"></i>
 			</a>
 			<a href="explore.html" class="nav-link">
@@ -379,7 +449,7 @@
 			<a href="chat-list.html" class="nav-link">
 				<i class="flaticon flaticon-chat-1"></i>
 			</a>
-			<a href="profile.html" class="nav-link">
+			<a href="profile.php?user_id=<?php echo $user_id; ?>" class="nav-link">
 				<i class="flaticon flaticon-user"></i>
 			</a>
 		</div>
@@ -420,7 +490,75 @@ function startLiveStream() {
 }
 
 </script>
-	
 
-<!-- Mirrored from datingkit.w3itexpert.com/xhtml/home.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 19 Oct 2023 01:39:52 GMT -->
+<script>
+    // Automatically get the user's location when the page loads
+    window.onload = function() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPosition, showError);
+        } else {
+            document.getElementById('location').innerText = "Geolocation is not supported by this browser.";
+        }
+    };
+
+    function showPosition(position) {
+        const lat = position.coords.latitude;
+        const lon = position.coords.longitude;
+        // Optionally, you can reverse geocode using a free API (e.g., OpenCageData)
+        reverseGeocode(lat, lon);
+    }
+
+    function showError(error) {
+        switch(error.code) {
+            case error.PERMISSION_DENIED:
+                document.getElementById('location').innerText = "User denied the request for Geolocation.";
+                break;
+            case error.POSITION_UNAVAILABLE:
+                document.getElementById('location').innerText = "Location information is unavailable.";
+                break;
+            case error.TIMEOUT:
+                document.getElementById('location').innerText = "The request to get user location timed out.";
+                break;
+            case error.UNKNOWN_ERROR:
+                document.getElementById('location').innerText = "An unknown error occurred.";
+                break;
+        }
+    }
+
+    function reverseGeocode(lat, lon) {
+        const apiKey = 'ecf02c517f714576bf138abddb097dcb'; // Replace with your OpenCage API key
+        const url = `https://api.opencagedata.com/geocode/v1/json?q=${lat}+${lon}&key=${apiKey}`;
+        
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                if (data.results && data.results.length > 0) {
+                    const { city, state } = data.results[0].components;
+                    document.getElementById('location').innerText += `\n${city}, ${state}`;
+                } else {
+                    document.getElementById('location').innerText += `\nCity/State not found.`;
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+</script>
+	<script>
+		function sendNotification(receiverId, type) {
+    const senderId = <?php echo $_SESSION['user_id']; ?>; // Assuming the logged-in user ID is stored in the session
+    
+    // Make AJAX request to PHP to store the notification
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', 'send_notification.php', true);
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            alert('Notification sent!');
+        }
+    };
+    xhr.send(`receiver_id=${receiverId}&sender_id=${senderId}&type=${type}`);
+}
+
+	</script>
+
+<!-- Mirrored from datingkit.w3itexpert.com/xhtml/home.php by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 19 Oct 2023 01:39:52 GMT -->
 </html>
