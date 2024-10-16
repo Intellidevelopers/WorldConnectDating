@@ -23,11 +23,34 @@ if (mysqli_stmt_prepare($stmt, $sql)) {
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
     $user = mysqli_fetch_assoc($result);
-
 } else {
     // Handle database error
     echo "<div class='alert alert-danger'>Database error.</div>";
 }
+
+// Function to get all users except the logged-in user
+function getAllUsers($conn, $logged_in_user_id) {
+    $users = [];
+    // Fetch users excluding the logged-in user
+    $query = "SELECT * FROM users WHERE id != ?"; 
+    $stmt = mysqli_stmt_init($conn);
+    if (mysqli_stmt_prepare($stmt, $query)) {
+        mysqli_stmt_bind_param($stmt, "i", $logged_in_user_id);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+
+        if ($result && mysqli_num_rows($result) > 0) {
+            while ($row = mysqli_fetch_assoc($result)) {
+                $users[] = $row; // Add each user to the users array
+            }
+        }
+    }
+
+    return $users;
+}
+
+// Get all users except the logged-in user
+$users = getAllUsers($conn, $user_id);
 ?>
 
 
@@ -270,30 +293,11 @@ if (mysqli_stmt_prepare($stmt, $sql)) {
 		<div class="container">
 			<div class="demo__card-cont dz-gallery-slider">
 			<?php
-			// Start the session
-			// Function to get all users from the database
-			function getAllUsers($conn) {
-				$users = [];
-				$query = "SELECT * FROM users"; // Adjust this query based on your needs
-				$result = mysqli_query($conn, $query);
-
-				if ($result && mysqli_num_rows($result) > 0) {
-					while ($row = mysqli_fetch_assoc($result)) {
-						$users[] = $row; // Add each user to the users array
-					}
-				}
-
-				return $users;
-			}
-
-			// Get all users from the database
-			$users = getAllUsers($conn);
-
-			// Check if users exist and display user information
-			if (!empty($users)) {
-				foreach ($users as $user) {
-        // Display user profile information within HTML structure
-        ?>
+            // Check if users exist and display user information
+            if (!empty($users)) {
+                foreach ($users as $user) {
+                    // Display user profile information within HTML structure
+            ?>
         <div class="demo__card">
             <div class="dz-media">
                 <img src="<?php echo htmlspecialchars($user['profilepic']) ? htmlspecialchars($user['profilepic']) : 'assets/images/slider/pic1.png'; ?>" alt="">
@@ -317,15 +321,12 @@ if (mysqli_stmt_prepare($stmt, $sql)) {
             </div>
             <div class="demo__card__drag"></div>
         </div>
-        <?php
-    }
-} else {
-    echo "<p>No users found</p>";
-}
-
-// Close database connection
-mysqli_close($conn); // Close database connection
-?>
+		<?php
+                }
+            } else {
+                echo "<p>No users found.</p>";
+            }
+            ?>
 
 				<!-- <div class="demo__card">
 					<div class="dz-media">

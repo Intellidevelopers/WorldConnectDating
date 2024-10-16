@@ -3,6 +3,7 @@
 include('dbconn.php');
 // Start the session
 session_start();
+
 // Check if the user is logged in
 if (!isset($_SESSION['user_id'])) {
     // Redirect to login page if not logged in
@@ -11,18 +12,42 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 // Get the logged-in user ID from the session
-$user_id = $_SESSION['user_id'];
-// Fetch user details from the database
-$sql = "SELECT first_name, dob, interest, profilepic,education, work_experience,sexual_orientation, about, company, occupation, kids_ages FROM users WHERE id = ?";
-$stmt = mysqli_stmt_init($conn);
-if (mysqli_stmt_prepare($stmt, $sql)) {
-    mysqli_stmt_bind_param($stmt, "i", $user_id);
-    mysqli_stmt_execute($stmt);
-    $result = mysqli_stmt_get_result($stmt);
-    $user = mysqli_fetch_assoc($result);
+$logged_in_user_id = $_SESSION['user_id'];
+
+// Check if the 'id' parameter is present in the URL
+if (isset($_GET['id']) && !empty($_GET['id'])) {
+    // Get the user ID from the query parameter
+    $viewed_user_id = intval($_GET['id']);
+    
+    // Prevent displaying the logged-in user's own profile
+    if ($viewed_user_id == $logged_in_user_id) {
+        // Redirect to another page (e.g., home page or their profile page)
+        header("Location: my-profile.php");
+        exit();
+    }
+
+    // Fetch the user details of the other user
+    $sql = "SELECT first_name, dob, interest, profilepic, education, work_experience, sexual_orientation, about, company, occupation, kids_ages FROM users WHERE id = ?";
+    $stmt = mysqli_stmt_init($conn);
+    if (mysqli_stmt_prepare($stmt, $sql)) {
+        mysqli_stmt_bind_param($stmt, "i", $viewed_user_id);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        $user = mysqli_fetch_assoc($result);
+
+        // Check if user exists
+        if (!$user) {
+            echo "<div class='alert alert-danger'>User not found.</div>";
+            exit();
+        }
+    } else {
+        // Handle database error
+        echo "<div class='alert alert-danger'>Database error.</div>";
+        exit();
+    }
 } else {
-    // Handle database error
-    echo "<div class='alert alert-danger'>Database error.</div>";
+    echo "<div class='alert alert-danger'>Invalid request. No user ID provided.</div>";
+    exit();
 }
 ?>
 
@@ -200,7 +225,10 @@ if (mysqli_stmt_prepare($stmt, $sql)) {
 	<div class="footer fixed">
 		<div class="dz-icon-box">
 			<a href="home.php" title="Not Interested" onclick="alert('You are not interested in this user')" class="icon dz-flex-box dislike"><i class="flaticon flaticon-cross font-18"></i></a>
-			<a href="chat.html" title="Message user" class="icon dz-flex-box super-like"><i class="fa-solid fa-message"></i></a>
+			<a href="chat.php?user_id=<?php echo $viewed_user_id; ?>" title="Message user" class="icon dz-flex-box super-like">
+				<i class="fa-solid fa-message"></i>
+			</a>
+
 			<a href="wishlist.html" title="Interested" onclick="alert('You are interested in this user')" class="icon dz-flex-box like"><i class="fa-solid fa-heart"></i></a>
 		</div>
 	</div>

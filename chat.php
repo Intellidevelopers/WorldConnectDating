@@ -1,3 +1,60 @@
+<?php
+// chat.php
+
+// Start the session if needed
+session_start();
+
+// Include your database connection
+include 'dbconn.php'; // Ensure you have your DB connection file
+
+// Check if user_id is set in the URL
+if (isset($_GET['user_id'])) {
+    $viewed_user_id = $_GET['user_id'];
+
+    // Sanitize the input to prevent SQL injection
+    $viewed_user_id = intval($viewed_user_id); // Assuming user_id is an integer
+
+    // Query to fetch user details by user_id
+    $sql = "SELECT * FROM users WHERE id = ?";
+    
+    // Prepare statement
+    if ($stmt = $conn->prepare($sql)) {
+        // Bind parameters
+        $stmt->bind_param("i", $viewed_user_id);
+
+        // Execute the statement
+        $stmt->execute();
+
+        // Get result
+        $result = $stmt->get_result();
+
+        // Check if user exists
+        if ($result->num_rows > 0) {
+            // Fetch user details
+            $user_details = $result->fetch_assoc();
+            // Now you can access user details
+            $first_name = $user_details['first_name'];
+            $dob = $user_details['dob'];
+            $profilepic = $user_details['profilepic'];
+            // Add more fields as needed
+        } else {
+            echo "User not found.";
+        }
+
+        // Close statement
+        $stmt->close();
+    } else {
+        echo "Error in preparing statement.";
+    }
+} else {
+    echo "No user ID provided.";
+}
+
+// Close database connection
+$conn->close();
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -129,15 +186,16 @@
 					</div>
 					<div class="mid-content d-flex align-items-center text-start">
 						<a href="javascript:void(0);" class="media media-40 rounded-circle me-3">
-							<img src="assets/images/user/pic1.jpg" alt="/">
+							<img src="<?php echo htmlspecialchars($profilepic); ?>" alt="<?php echo htmlspecialchars($first_name); ?>" />
 						</a>
 						<div>
-							<a href="profile-detail.php">
-								<h6 class="title">Miselia,24</h6>
+							<a href="profile-detail.php?user_id=<?php echo $viewed_user_id; ?>">
+								<h6 class="title"><?php echo htmlspecialchars($first_name) . ', ' . htmlspecialchars($dob); ?></h6>
 							</a>
-							<span>Online 24m ago</span>
-						</div>	
+							<span>Online</span>
+						</div>    
 					</div>
+
 					<div class="right-content d-flex align-items-center">
 						<a href="javascript:void(0);" class="dz-icon btn btn-primary light">
 							<i class="fa-solid fa-phone"></i>
@@ -154,56 +212,9 @@
 	<!-- Page Content Start -->
 	<div class="page-content space-top p-b60 message-content">
 		<div class="container"> 
-			<div class="chat-box-area"> 
+			<div id="messageContainer" class="chat-box-area"> 
 				<!-- Example Messages -->
-				<div class="chat-content">
-					<div class="message-item" data-message-id="1">
-						<div class="swipe-reply">Reply</div>
-						<div class="swipe-delete">Delete</div>
-						<div class="bubble">Hi Richard, thanks for adding me</div>    
-						<div class="message-time">08:35</div>    
-					</div>
-				</div>
-				<div class="chat-content user">
-					<div class="message-item" data-message-id="2">
-						<div class="swipe-reply">Reply</div>
-						<div class="swipe-delete">Delete</div>
-						<div class="bubble">Hi Miselia, you're welcome, nice to meet you too</div>    
-						<div class="message-time">08:40</div>    
-					</div>
-				</div>
-				<div class="chat-content">
-					<div class="message-item" data-message-id="3">
-						<div class="swipe-reply">Reply</div>
-						<div class="swipe-delete">Delete</div>
-						<div class="bubble">I look you're singer, can you sing for me</div>    
-						<div class="message-time">9:44 AM</div>    
-					</div>
-				</div>
-				<div class="chat-content user">
-					<div class="message-item" data-message-id="4">
-						<div class="swipe-reply">Reply</div>
-						<div class="swipe-delete">Delete</div>
-						<div class="bubble">Sure</div>    
-						<div class="message-time">9:30 AM</div>    
-					</div>
-				</div>
-				<div class="chat-content">
-					<div class="message-item" data-message-id="5">
-						<div class="swipe-reply">Reply</div>
-						<div class="swipe-delete">Delete</div>
-						<div class="bubble">Really!</div>    
-						<div class="message-time">10:44 AM</div>    
-					</div>
-				</div>
-				<div class="chat-content user">
-					<div class="message-item" data-message-id="6">
-						<div class="swipe-reply">Reply</div>
-						<div class="swipe-delete">Delete</div>
-						<div class="bubble">Why not</div>    
-						<div class="message-time">10:44 AM</div>    
-					</div>
-				</div>
+			
 				<!-- End of Messages -->
 			</div>
 		</div> 
@@ -213,11 +224,12 @@
         <div class="container p-2">
             <div class="chat-footer">
                 <form>
+    				<input type="hidden" id="receiverId" value="1"> <!-- Replace with the actual receiver ID -->
                     <div class="form-group">
                         <div class="input-wrapper message-area">
 							<div class="append-media"></div>
-                            <input type="text" class="form-control" placeholder="Send message...">
-                            <a href="javascript:void(0);" class="btn btn-chat btn-icon btn-primary light p-0 btn-rounded dz-flex-box">
+                            <input type="text" id="messageInput" class="form-control" placeholder="Send message...">
+                            <a href="javascript:void(0);" id="sendButton" class="btn btn-chat btn-icon btn-primary light p-0 btn-rounded dz-flex-box">
                                <i class="icon feather icon-send"></i>
                             </a>
                         </div>
@@ -313,6 +325,62 @@
         });
     });
 </script>
+
+<script>
+	$('#sendButton').on('click', function() {
+    var message = $('#messageInput').val();
+    var receiver_id = $('#receiverId').val(); // The ID of the user you're chatting with
+
+    $.ajax({
+        url: 'sendMessage.php',
+        type: 'POST',
+        data: { message: message, receiver_id: receiver_id },
+        success: function(response) {
+            $('#messageInput').val(''); // Clear input field
+            fetchMessages(); // Reload the chat
+        }
+    });
+});
+
+</script>
+
+<script>
+    // Fetch the session user ID from PHP and assign it to a JavaScript variable
+    var userId = parseInt(<?php echo json_encode($_SESSION['user_id']); ?>);  // Make sure it's an integer
+
+    function fetchMessages() {
+        var receiver_id = $('#receiverId').val();
+
+        $.ajax({
+            url: 'getMessages.php',
+            type: 'POST',
+            data: { receiver_id: receiver_id },
+            success: function(response) {
+                var messages = JSON.parse(response);
+                var messageContainer = $('#messageContainer');
+                messageContainer.empty(); // Clear the container
+
+                messages.forEach(function(message) {
+                    // Compare message sender ID to session user ID
+                    var msgClass = (message.sender_id == userId) ? 'sent-message' : 'incoming-message';
+                    var messageItem = `
+                        <div class="chat-content user ${msgClass}">
+                            <div class="message-item">
+                                <div class="bubble">${message.message}</div>
+                                <div class="message-time">${message.timestamp}</div>
+                            </div>
+                        </div>`;
+                    messageContainer.append(messageItem);
+                });
+            }
+        });
+    }
+
+    // Fetch messages every 2 seconds to simulate real-time updates
+    setInterval(fetchMessages, 2000);
+
+</script>
+
 
 </body>
 </html>
