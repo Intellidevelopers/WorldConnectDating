@@ -27,7 +27,8 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
     }
 
     // Fetch the user details of the other user
-    $sql = "SELECT first_name, dob, interest, profilepic, education, work_experience, sexual_orientation, about, company, occupation, kids_ages FROM users WHERE id = ?";
+    $sql = "SELECT id, first_name, dob, interest, profilepic, education, work_experience, sexual_orientation, about, company, occupation, kids_ages FROM users WHERE id = ?";
+
     $stmt = mysqli_stmt_init($conn);
     if (mysqli_stmt_prepare($stmt, $sql)) {
         mysqli_stmt_bind_param($stmt, "i", $viewed_user_id);
@@ -97,7 +98,8 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
 			justify-content: space-between;
 		}
 		.title2{
-			margin-bottom: -20px
+			margin-bottom: -20px;
+			color: #fff;
 		}
 	</style>
 </head>   
@@ -228,8 +230,9 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
 			<a href="chat.php?user_id=<?php echo $viewed_user_id; ?>" title="Message user" class="icon dz-flex-box super-like">
 				<i class="fa-solid fa-message"></i>
 			</a>
-
-			<a href="wishlist.html" title="Interested" onclick="alert('You are interested in this user')" class="icon dz-flex-box like"><i class="fa-solid fa-heart"></i></a>
+			<?php if (isset($user['id'])): ?>
+			<a href="javascript:void(0)" title="Interested" data-receiver-id="<?php echo htmlspecialchars($user['id']); ?>" onclick="sendNotification(<?php echo htmlspecialchars($user['id']); ?>, 'love')" class="icon dz-flex-box like"><i class="fa-solid fa-heart"></i></a>
+			<?php endif; ?>
 		</div>
 	</div>
 	<!-- Menubar -->
@@ -245,7 +248,62 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
 <script src="assets/js/custom.js"></script>
 <script src="index.js"></script>
 <script src="location.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
 </body>
+
+<script>
+		function sendNotification(receiverId, type) {
+    const senderId = <?php echo $_SESSION['user_id']; ?>; // Assuming the logged-in user ID is stored in the session
+    
+    // Make AJAX request to PHP to store the notification
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', 'send_notification.php', true);
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            alert('Notification sent!');
+        }
+    };
+    xhr.send(`receiver_id=${receiverId}&sender_id=${senderId}&type=${type}`);
+}
+
+	</script>
+<!-- <script>
+    function sendProfileViewNotification(receiverId, senderId) {
+        // Create a FormData object to hold the POST data
+        const formData = new FormData();
+        formData.append('receiver_id', receiverId);
+        formData.append('sender_id', senderId);
+        formData.append('type', 'view'); // Notification type: 'view'
+
+        // Send the AJAX request using fetch
+        fetch('send_notification.php', { // URL of your PHP script
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json()) // Parse JSON response
+        .then(data => {
+            if (data.status === 'success') {
+                console.log('Notification sent successfully:', data.message);
+            } else {
+                console.error('Error sending notification:', data.message);
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+    // Example usage: call this function when a profile is viewed
+    document.addEventListener('DOMContentLoaded', function() {
+        // Assume `receiverId` is the profile owner and `senderId` is the viewer
+        const receiverId = 123; // Replace with the actual receiver's user ID
+        const senderId = 456;   // Replace with the actual sender's user ID
+        
+        // Send notification when profile is viewed
+        sendProfileViewNotification(receiverId, senderId);
+    });
+</script> -->
+
 
 <!-- Mirrored from datingkit.w3itexpert.com/xhtml/profile-detail.php by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 19 Oct 2023 01:40:18 GMT -->
 </html>

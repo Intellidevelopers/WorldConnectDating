@@ -212,10 +212,19 @@ $conn->close();
 	<!-- Page Content Start -->
 	<div class="page-content space-top p-b60 message-content">
 		<div class="container"> 
-			<div id="messageContainer" class="chat-box-area"> 
-				<!-- Example Messages -->
-			
-				<!-- End of Messages -->
+			<div class="chat-box-area"> 
+            <div class="chat-content incoming-message">
+                <div class="message-item">
+                    <div class="bubble">${msg.message}</div>
+                    <div class="message-time">${messageTime}</div>
+                </div>
+            </div>
+            <div class="chat-content user sent-message">
+                <div class="message-item">
+                    <div class="bubble">${msg.message}</div>
+                    <div class="message-time">${messageTime}</div>
+                </div>
+            </div>
 			</div>
 		</div> 
 	</div>
@@ -250,7 +259,6 @@ $conn->close();
 <script src="assets/js/settings.js"></script>
 <script src="assets/js/custom.js"></script>
 
-<!-- Additional JavaScript for Swipe Actions -->
 <script>
     $(document).ready(function () {
         // Variables to track touch positions
@@ -324,61 +332,6 @@ $conn->close();
             }
         });
     });
-</script>
-
-<script>
-	$('#sendButton').on('click', function() {
-    var message = $('#messageInput').val();
-    var receiver_id = $('#receiverId').val(); // The ID of the user you're chatting with
-
-    $.ajax({
-        url: 'sendMessage.php',
-        type: 'POST',
-        data: { message: message, receiver_id: receiver_id },
-        success: function(response) {
-            $('#messageInput').val(''); // Clear input field
-            fetchMessages(); // Reload the chat
-        }
-    });
-});
-
-</script>
-
-<script>
-    // Fetch the session user ID from PHP and assign it to a JavaScript variable
-    var userId = parseInt(<?php echo json_encode($_SESSION['user_id']); ?>);  // Make sure it's an integer
-
-    function fetchMessages() {
-        var receiver_id = $('#receiverId').val();
-
-        $.ajax({
-            url: 'getMessages.php',
-            type: 'POST',
-            data: { receiver_id: receiver_id },
-            success: function(response) {
-                var messages = JSON.parse(response);
-                var messageContainer = $('#messageContainer');
-                messageContainer.empty(); // Clear the container
-
-                messages.forEach(function(message) {
-                    // Compare message sender ID to session user ID
-                    var msgClass = (message.sender_id == userId) ? 'sent-message' : 'incoming-message';
-                    var messageItem = `
-                        <div class="chat-content user ${msgClass}">
-                            <div class="message-item">
-                                <div class="bubble">${message.message}</div>
-                                <div class="message-time">${message.timestamp}</div>
-                            </div>
-                        </div>`;
-                    messageContainer.append(messageItem);
-                });
-            }
-        });
-    }
-
-    // Fetch messages every 2 seconds to simulate real-time updates
-    setInterval(fetchMessages, 2000);
-
 </script>
 
 

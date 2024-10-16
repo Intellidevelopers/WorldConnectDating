@@ -8,7 +8,7 @@ include('dbconn.php');
 // Check if the user is logged in
 if (isset($_SESSION['user_id'])) {
     // Get the logged-in user ID from the session
-    $logged_in_user_id = $_SESSION['user_id'];
+    $logged_in_user_id = filter_var($_SESSION['user_id'], FILTER_SANITIZE_NUMBER_INT);
 
     // Fetch notifications for the logged-in user
     $query = "SELECT n.sender_id, u.first_name, n.notification_type, n.message, n.created_at 
@@ -31,22 +31,11 @@ if (isset($_SESSION['user_id'])) {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    	<!-- Meta -->
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, minimal-ui, viewport-fit=cover">
-	<meta name="theme-color" content="#FF50A2">
-	<meta name="author" content="WorldConnect">
-	<meta name="robots" content="index, follow"> 
-	<meta name="keywords" content="android, ios, mobile, application template, progressive web app, ui kit, multiple color, dark layout, match, partner, perfect match, dating app, dating, couples, dating kit, mobile app">
-	<meta name="description" content="Transform your dating app vision into reality with our 'Dating Kit' - a powerful Bootstrap template for mobile dating applications. Seamlessly integrate captivating features, stylish UI components, and user-friendly functionality. Launch your dating app efficiently and elegantly using the Dating Kit template.">
-	<meta property="og:title" content="WorldConnect - Dating Forum">
-	<meta property="og:description" content="Transform your dating app vision into reality with our 'Dating Kit' - a powerful Bootstrap template for mobile dating applications. Seamlessly integrate captivating features, stylish UI components, and user-friendly functionality. Launch your dating app efficiently and elegantly using the Dating Kit template.">
-	<meta property="og:image" content="https://datingkit.WorldConnect.com/xhtml/error.html">
-	<meta name="format-detection" content="telephone=no">
+    <meta name="theme-color" content="#FF50A2">
+    <meta name="description" content="Dating app notifications page">
     <title>Notifications</title>
-    <!-- Bootstrap CSS (or you can add your own custom CSS) -->
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         .notification-item {
@@ -55,12 +44,15 @@ if (isset($_SESSION['user_id'])) {
             margin-bottom: 10px;
             border-radius: 5px;
             background-color: #f9f9f9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
         .notification-item p {
             margin: 0;
         }
         .notification-item .text-muted {
-            font-size: 0.9em;
+            font-size: 0.85em;
             color: #6c757d;
         }
     </style>
@@ -76,8 +68,9 @@ if (isset($_SESSION['user_id'])) {
             while ($row = $result->fetch_assoc()) {
                 ?>
                 <div class="notification-item">
-                    <p><strong><?php echo htmlspecialchars($row['first_name']); ?></strong> <h6 style="color: #FF50A2"><?php echo htmlspecialchars($row['message']); ?></h6></p>
-                    <p class="text-muted"><?php echo htmlspecialchars($row['created_at']); ?></p>
+                    <p><strong><?php echo htmlspecialchars($row['first_name']); ?></strong></p>
+                    <h6 style="color: #FF50A2"><?php echo htmlspecialchars($row['message']); ?></h6>
+                    <p class="text-muted"><?php echo htmlspecialchars(date('M d, Y H:i', strtotime($row['created_at']))); ?></p>
                 </div>
                 <?php
             }
@@ -92,7 +85,8 @@ if (isset($_SESSION['user_id'])) {
     </div>
 </div>
 
-<!-- Bootstrap JS (Optional) -->
+<!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>
